@@ -36,10 +36,10 @@ public class ServerThread extends Thread {
             Logger.getLogger(ServerThread.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    @Override
     public void run() {
         System.out.println("ServerThread running. Client: " + ID);
-        while (true) {
+        while (socket.isConnected()) {
             try {
                 server.handle(ID, streamIn.readUTF());
             } catch (IOException ioe) {

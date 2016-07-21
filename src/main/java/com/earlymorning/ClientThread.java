@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package com.earlymorning;
-
 /**
  *
  * @author dario.barrotta
@@ -16,14 +15,12 @@ import java.util.logging.Logger;
 
 public class ClientThread extends Thread {
 
-    private Socket socket = null;
     private MainClient client = null;
     private DataInputStream streamIn = null;
 
     public ClientThread(MainClient client, Socket socket) {
         try {
             this.client = client;
-            this.socket = socket;
             streamIn = new DataInputStream(socket.getInputStream());
             start();
         } catch (IOException ex) {
@@ -31,7 +28,7 @@ public class ClientThread extends Thread {
         }
     }
 
-
+    @Override
     public void run() {
         while (true) {
             try {

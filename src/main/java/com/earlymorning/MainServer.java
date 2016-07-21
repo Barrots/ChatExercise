@@ -5,12 +5,18 @@
  */
 package com.earlymorning;
 
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 /**
  *
  * @author dario.barrotta
  */
 import java.net.*;
 import java.io.*;
+
 /*
  Class that implements the server.
  Start the ServerSocket and MainServer himself as a Thread that has to accept every clients trying to connect to him adding them into a list of ServerThread.
@@ -19,10 +25,9 @@ import java.io.*;
  The MainServer manage the input and use the logic of a chat to send (throght ServerThread) a broadcast msg or single ones 
 
  */
-
 public class MainServer implements Runnable {
 
-    private ServerThread clients[] = new ServerThread[20];
+    private ServerThread[] clients = new ServerThread[20];
     private ServerSocket server = null;
     private Thread thread = null;
     private int numClient = 0;
@@ -38,10 +43,11 @@ public class MainServer implements Runnable {
         }
     }
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         MainServer server = new MainServer(5555);
     }
-
+    
+    @Override
     public void run() {
         while (thread != null) {
             try {
@@ -60,19 +66,17 @@ public class MainServer implements Runnable {
         if (findClient(ID) != -1 && clients[findClient(ID)].getUsername() != "") { // Set Username in the method
             user = clients[findClient(ID)].getUsername();
         }
-        if (input.equals(".bye")) {                                                // Manage the disconnection of a Client
+        if (".bye".equals(input)) {                                                // Manage the disconnection of a Client
             for (int i = 0; i < numClient; i++) {
                 if (i != findClient(ID)) {
                     clients[i].send(user + " has disconnected");
-                } else {
-
                 }
             }
             clients[findClient(ID)].send(".bye");
             remove(ID);
 
-        } else if (input.startsWith("/")) {                                        // Manage the particular action of clients
-            if (input.contains("/username= ")) {                                   // Such as input the username
+        } else if (input.startsWith("/")) {                                       // Manage the particular action of clients
+            if (input.contains("/username= ")) {                                  // Such as input the username
                 user = input.replace("/username= ", "");
                 clients[findClient(ID)].setUsername(user);
                 String users = "";
@@ -85,8 +89,8 @@ public class MainServer implements Runnable {
                     clients[findClient(ID)].send("The other connected user are: " + users.substring(0, users.length() - 2));
                 }
             } else {                                                               // Send a private msg to only 1 other user
-                String receiver = input.substring(1, input.indexOf(" "));
-                input = input.substring(input.indexOf(" "), input.length());
+                String receiver = input.substring(1, input.indexOf(' '));
+                input = input.substring(input.indexOf(' '), input.length());
                 clients[findClient(receiver)].send("/" + user + ":" + input);
             }
         } else {                                                                   // Send a broadcast msg from client to all clients
@@ -97,17 +101,22 @@ public class MainServer implements Runnable {
     }
 
     public synchronized void remove(int ID) {
-        int pos = findClient(ID);
-        if (pos >= 0) {
-            System.out.println("Removing client thread " + ID);
-            numClient--;
-            try {
-                clients[pos].close();
-            } catch (IOException ioe) {
-                System.out.println("Error closing thread: " + ioe);
+            int pos = findClient(ID);
+            if (pos >= 0) {
+                System.out.println("Removing client thread " + ID);
+                if (pos < numClient - 1) {
+                    for (int i = pos + 1; i < numClient; i++) {
+                        clients[i - 1] = clients[i];
+                    }
+                }
+                numClient--;
+                try {
+                    clients[pos].close();
+                } catch (IOException ioe) {
+                    System.out.println("Error closing thread: " + ioe);
+                }
+                clients[pos].stop();
             }
-            clients[pos].stop();
-        }
     }
 
     private void addClient(Socket socket) {

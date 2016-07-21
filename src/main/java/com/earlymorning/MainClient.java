@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package com.earlymorning;
-
 /**
  *
  * @author dario.barrotta
@@ -53,6 +52,7 @@ public class MainClient implements Runnable {
         MainClient client = new MainClient("localhost", 5555);
     }
     
+    @Override
     public void run() {
         while (thread != null) {
             try {
@@ -72,8 +72,8 @@ public class MainClient implements Runnable {
     }
 
     public void receive(String msg) {
-        if (msg.equals(".bye")) {    // Handle the exit of a client
-            System.out.println("Good bye. Press RETURN to exit ...");
+        if (".bye".equals(msg)) {    // Handle the exit of a client
+            System.out.println("Good bye. ");
             stop();
         } else {
             System.out.println(msg);
