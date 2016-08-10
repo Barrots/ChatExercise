@@ -15,7 +15,7 @@ Class that implements one client ( that will be called multiple times).
 MainClient connect to the server, create a stream of data and start ClientThread.
 ClientThread will wait for every message from the socket and re-send them to this class.
 Every time ClientThread send a msg to MainClient it is shown in the console.
-MainClient (started as a Thread) will send throught the socket all the messages written in the console.
+MainClient (started as a Thread) will send through the socket all the messages written in the console.
 
 */
 
@@ -49,7 +49,7 @@ public class MainClient implements Runnable {
     }
 
     public static void main(String args[]) {
-        MainClient client = new MainClient("localhost", 5555);
+        MainClient client = new MainClient("localhost", MainServer.port);
     }
     
     @Override
